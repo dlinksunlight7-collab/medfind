@@ -1,72 +1,156 @@
+/* manage.css - Modern admin management interface */
+:root {
+  --manage-primary: #4f46e5;
+  --manage-primary-dark: #4338ca;
+  --manage-primary-light: #6366f1;
+  --manage-bg: #f8fafc;
+  --manage-surface: #ffffff;
+  --manage-border: #e2e8f0;
+  --manage-text: #1e293b;
+  --manage-text-light: #64748b;
+  --shadow-manage: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-manage-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-manage-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--manage-bg);
+  color: var(--manage-text);
+  line-height: 1.5;
 }
 
 .container {
-    width: 90%;
-    margin: auto;
-    padding: 30px;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 2rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--manage-primary), #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .form-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  background: var(--manage-surface);
+  padding: 28px;
+  border-radius: 20px;
+  margin-bottom: 36px;
+  box-shadow: var(--shadow-manage-md);
+  border: 1px solid var(--manage-border);
+  transition: box-shadow 0.2s ease;
+}
+
+.form-section:hover {
+  box-shadow: var(--shadow-manage-lg);
 }
 
 input {
-    padding: 10px;
-    margin: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+  padding: 10px 14px;
+  margin: 6px;
+  border-radius: 10px;
+  border: 1px solid var(--manage-border);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--manage-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 button {
-    padding: 8px 15px;
-    background: #4e73df;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
+  padding: 10px 20px;
+  background: var(--manage-primary);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 button:hover {
-    background: #2e59d9;
+  background: var(--manage-primary-dark);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--manage-surface);
+  box-shadow: var(--shadow-manage-md);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--manage-border);
 }
 
 th {
-    background: #4e73df;
-    color: white;
+  background: linear-gradient(135deg, var(--manage-primary), var(--manage-primary-light));
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 tr:hover {
-    background: #f1f1f1;
+  background: #f1f5f9;
 }
 
 a {
-    text-decoration: none;
-    color: #4e73df;
-    font-weight: bold;
+  text-decoration: none;
+  color: var(--manage-primary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--manage-primary-dark);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 20px 16px;
+  }
+  
+  .form-section {
+    padding: 20px;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  
+  input {
+    width: calc(100% - 12px);
+    margin: 6px;
+  }
 }
