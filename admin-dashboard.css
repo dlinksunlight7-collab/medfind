@@ -1,64 +1,167 @@
+/* admin-dashboard.css - Enhanced with premium styling */
+:root {
+  --paper: #faf9f6;
+  --ink: #1a1a1a;
+  --teal: #1a5f5f;
+  --teal-light: #2a8a8a;
+  --gold: #b8942e;
+  --gold-light: #d4b04c;
+  --cream: #ede8df;
+  --card-bg: #ffffff;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+  --transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: 'DM Sans', sans-serif; /* Changed font */
-    background: var(--paper); /* Changed background */
-    color: var(--ink); /* Changed text color */
+  margin: 0;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100vh;
 }
 
 .dashboard {
-    text-align: center;
-    padding: 40px;
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 h1 {
-    margin-bottom: 40px;
-    font-family: 'Playfair Display', serif; /* Changed heading font */
-    color: var(--teal); /* Changed heading color */
+  margin-bottom: 48px;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  color: var(--teal);
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--teal-light));
+  border-radius: 2px;
 }
 
 .cards {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
 }
 
 .card {
-    background: var(--card-bg); /* Using variable */
-    padding: 30px;
-    width: 200px;
-    border-radius: 8px; /* Slightly rounded corners */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Softer shadow */
-    border: 1px solid var(--cream); /* Subtle border */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--card-bg);
+  padding: 32px 24px;
+  width: 220px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(237, 232, 223, 0.6);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--teal-light));
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
 }
 
 .card h3 {
-    margin-bottom: 15px;
-    font-family: 'Playfair Display', serif;
-    color: var(--gold); /* Changed heading color */
-    font-size: 16px;
+  margin-bottom: 16px;
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--gold);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .card p {
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--teal); /* Changed data color */
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--teal);
+  line-height: 1.2;
 }
 
 a {
-    text-decoration: none;
-    color: var(--teal-light); /* Changed link color */
-    font-weight: 500;
-    transition: color 0.2s ease;
+  text-decoration: none;
+  color: var(--teal-light);
+  font-weight: 500;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 a:hover {
-    text-decoration: underline;
-    color: var(--teal); /* Darker teal on hover */
+  color: var(--teal);
+  text-decoration: none;
+  gap: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 32px 16px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 32px;
+  }
+  
+  .cards {
+    gap: 20px;
+  }
+  
+  .card {
+    width: calc(50% - 20px);
+    min-width: 160px;
+    padding: 24px 16px;
+  }
+  
+  .card p {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 100%;
+  }
 }
