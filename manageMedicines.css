@@ -1,48 +1,108 @@
+/* manageMedicines.css - Clean medicine management table */
+:root {
+  --med-primary: #2c3e50;
+  --med-primary-dark: #1e2a36;
+  --med-danger: #ef4444;
+  --med-danger-dark: #dc2626;
+  --med-bg: #f8fafc;
+  --med-surface: #ffffff;
+  --med-border: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
-    padding: 30px;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+  min-height: 100vh;
+  padding: 40px 24px;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2c3e50;
+  text-align: center;
+  margin-bottom: 28px;
+  color: var(--med-primary);
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background-color: var(--med-surface);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 th, td {
-    padding: 12px;
-    text-align: center;
+  padding: 14px 16px;
+  text-align: center;
 }
 
 th {
-    background-color: #2c3e50;
-    color: white;
+  background: linear-gradient(135deg, var(--med-primary), #34495e);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+  background-color: #f8fafc;
+}
+
+tr:hover {
+  background-color: #f1f5f9;
+  transition: background 0.2s ease;
 }
 
 button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .delete-btn {
-    background-color: #e74c3c;
-    color: white;
+  background-color: var(--med-danger);
+  color: white;
 }
 
 .delete-btn:hover {
-    background-color: #c0392b;
+  background-color: var(--med-danger-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 24px 16px;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  
+  table {
+    font-size: 13px;
+  }
 }
