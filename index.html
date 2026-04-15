@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MedFind — Medicine Finder</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #0a0a0f;
+      --paper: #f5f2ed;
+      --cream: #ede8df;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --teal: #1a6b6b;
+      --teal-light: #2a9090;
+      --red: #c0392b;
+      --muted: #888070;
+      --card-bg: #ffffff;
+      --border: rgba(201,168,76,0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== NOISE TEXTURE OVERLAY ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ===== HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 40px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text span {
+      color: var(--gold);
+    }
+
+    .nav-admin {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 4px;
+      transition: all 0.25s;
+    }
+
+    .nav-admin:hover {
+      background: rgba(201,168,76,0.12);
+      border-color: var(--gold);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: var(--ink);
+      padding: 90px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -60px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(26,107,107,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 900;
+      color: white;
+      line-height: 1.1;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.55);
+      font-size: 17px;
+      font-weight: 300;
+      max-width: 480px;
+      line-height: 1.65;
+      margin-bottom: 44px;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-box {
+      display: flex;
+      flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+      gap: 12px; /* Increased gap for better spacing */
+      max-width: 560px;
+      /* background: rgba(255,255,255,0.06); */ /* Removed, individual inputs will have backgrounds */
+      border: none; /* Removed, individual inputs will have borders */
+      border-radius: 0; /* Removed, individual inputs will have borders */
+      overflow: visible; /* Changed to visible */
+      transition: none; /* Removed, individual inputs will have transitions */
+    }
+    .search-box:focus-within {
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .search-icon {
+      /* This icon might need to be repositioned or removed if it's not clear which input it belongs to.
+         For now, I'll keep it but it might look odd with two inputs. */
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: rgba(255,255,255,0.35);
+      font-size: 18px;
+      flex-shrink: 0;
+      /* Consider adding margin-right if you want it to precede the first input */
+    }
+
+    #medicine,
+    #location {
+      flex: 1; /* Both inputs take equal space */
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(201,168,76,0.35);
+      outline: none;
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      padding: 15px 16px; /* Added horizontal padding */
+      width: auto;
+      box-shadow: none;
+      border-radius: 6px; /* Added border-radius */
+      transition: border-color 0.25s, box-shadow 0.25s;
+      min-width: 150px; /* Minimum width for inputs */
+    }
+
+    #medicine:focus,
+    #location:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+      transform: none;
+    }
+
+    #medicine::placeholder,
+    #location::placeholder { color: rgba(255,255,255,0.3); }
+
+    #searchBtn {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--ink);
+      border: none;
+      padding: 15px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 6px; /* Added border-radius */
+      box-shadow: none;
+      transition: opacity 0.2s;
+    }
+
+    #searchBtn:hover { transform: none; opacity: 0.88; }
+    #searchBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ===== MAIN CONTENT ===== */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 40px 100px;
+    }
+
+    /* ===== STATUS ===== */
+    .status {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status.searching::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--gold);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== RESULTS ===== */
+    #results {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--cream);
+      border-radius: 8px;
+      padding: 22px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border-color: rgba(201,168,76,0.4);
+    }
+
+    .card-left { flex: 1; min-width: 0; }
+
+    .med-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pharmacy {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pharmacy::before {
+      content: '📍';
+      font-size: 11px;
+    }
+
+    .card-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .price {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: -0.5px;
+    }
+
+    .price-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .stock {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .stock::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .stock.in {
+      color: #16783a;
+      background: rgba(22,120,58,0.1);
+    }
+
+    .stock.in::before { background: #16783a; }
+
+    .stock.out {
+      color: var(--red);
+      background: rgba(192,57,43,0.1);
+    }
+
+    .stock.out::before { background: var(--red); }
+
+    /* ===== DIVIDER ===== */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--cream);
+      margin: 56px 0;
+    }
+
+    /* ===== FEATURES ===== */
+    .features-header {
+      margin-bottom: 36px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .features-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+      background: var(--cream);
+      border: 1px solid var(--cream);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .feature {
+      background: var(--card-bg);
+      padding: 30px 28px;
+      transition: background 0.2s;
+    }
+
+    .feature:hover {
+      background: #fdfaf5;
+    }
+
+    .feature-icon {
+      font-size: 26px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .feature strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 24px 40px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      border-top: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .site-footer span {
+      color: var(--gold);
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 600px) {
+      .header-inner { padding: 0 20px; }
+      .hero { padding: 60px 20px 60px; }
+      .content { padding: 40px 20px 80px; }
+      .search-box {
+        max-width: 100%;
+        flex-direction: column; /* Stack items vertically */
+        gap: 12px;
+      }
+      #searchBtn {
+        padding: 15px 18px;
+        font-size: 11px;
+        width: 100%; /* Make button full width */
+      }
+      #medicine, #location {
+        width: 100%; /* Make inputs full width */
+      }
+      .search-icon {
+        display: none; /* Hide icon on mobile for simplicity, or reposition as desired */
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <div class="logo-mark">💊</div>
+        <span class="logo-text">Med<span>Find</span></span>
+      </a>
+      <a class="nav-admin" href="/login.html">Admin</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Medicine Locator</div>
+      <h1>Find the medicine<br>you need, <em>nearby.</em></h1>
+      <p>Compare live prices and stock levels across pharmacies in your city — before you leave home.</p>
+
+      <div class="search-box">
+        <div class="search-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <input id="medicine" placeholder="Enter medicine name..." autocomplete="off" />
+        <input id="location" placeholder="Enter city or pincode..." autocomplete="off" />
+        <button id="searchBtn">Search</button>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="content">
+      <p id="status" class="status">Enter medicine name and/or location above to begin searching.</p>
+      <ul id="results"></ul>
+
+      <hr class="section-divider" />
+
+      <div class="features-header">
+        <div class="section-label">Why MedFind</div>
+        <h2>Everything you need,<br>at a glance.</h2>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <span class="feature-icon">💰</span>
+          <strong>Compare Prices</strong>
+          <p>See prices from all nearby pharmacies side by side and choose the best deal.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">📦</span>
+          <strong>Real-time Stock</strong>
+          <p>Know exactly how many units are available before making the trip.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🗺️</span>
+          <strong>Quick Directions</strong>
+          <p>Instantly locate the pharmacy and get there without hassle.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">⚡</span>
+          <strong>Instant Results</strong>
+          <p>Live data updated continuously so you always get accurate availability.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    © 2026 <span>MedFind</span> — SmartCart. All rights reserved.
+  </footer>
+
+<script>
+  document.getElementById('searchBtn').addEventListener('click', search);
+  document.getElementById('location').addEventListener('keydown', e => {
+    if (e.key === 'Enter') search();
+  });
+
+  function renderResults(data) {
+    const results = document.getElementById('results');
+    const status = document.getElementById('status');
+    results.innerHTML = '';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      status.className = 'status';
+      status.textContent = 'No results found for this location.';
+      return;
+    }
+
+    status.className = 'status';
+    status.textContent = `${data.length} result${data.length > 1 ? 's' : ''} found`;
+
+    data.forEach((m, i) => {
+      const li = document.createElement('li');
+      li.className = 'card';
+      li.style.animationDelay = `${i * 60}ms`;
+      li.innerHTML = `
+        <div class="card-left">
+          <div class="med-name">${escapeHtml(m.medicine)}</div>
+          <div class="pharmacy">${escapeHtml(m.pharmacy)} · ${escapeHtml(m.location)}</div>
+        </div>
+        <div class="card-right">
+          <div class="price-label">Price</div>
+          <div class="price">₹${Number(m.price).toFixed(2)}</div>
+          <div class="stock ${m.stock > 0 ? 'in' : 'out'}">
+            ${m.stock > 0 ? `In stock (${m.stock})` : 'Out of stock'}
+          </div>
+        </div>
+      `;
+      results.appendChild(li);
+    });
+  }
+
+  function search() {
+    const medicineInput = document.getElementById('medicine'); // Added to get medicine input
+    const locationInput = document.getElementById('location');
+    const qMedicine = medicineInput.value.trim(); // Get medicine query
+    const qLocation = locationInput.value.trim(); // Get location query
+    const status = document.getElementById('status');
+    const btn = document.getElementById('searchBtn');
+
+    if (!qMedicine && !qLocation) { // Check if both are empty
+      status.className = 'status';
+      status.textContent = 'Please enter a medicine name and/or a city or pincode.';
+      medicineInput.focus(); // Focus on medicine input first
+      return;
+    }
+
+    btn.disabled = true;
+    status.className = 'status searching';
+    status.textContent = 'Searching…';
+    document.getElementById('results').innerHTML = '';
+
+    // Construct the query string with both medicine and location
+    let queryString = '';
+    if (qMedicine) {
+      queryString += `medicine=${encodeURIComponent(qMedicine)}`;
+    }
+    if (qLocation) {
+      if (queryString) queryString += '&'; // Add '&' if medicine is already in query
+      queryString += `location=${encodeURIComponent(qLocation)}`;
+    }
+
+    fetch(`/search?${queryString}`) // Use the constructed query string
+      .then(res => {
+        btn.disabled = false;
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(data => renderResults(data))
+      .catch(() => {
+        status.className = 'status';
+        status.textContent = 'Error fetching results. Please try again.';
+        btn.disabled = false;
+      });
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+</script>
+
+</body>
+</html>

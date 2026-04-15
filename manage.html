@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Medicines</title>
+    <link rel="stylesheet" href="/manage.css">
+</head>
+<body>
+
+    <h1>🛠 Manage Medicines</h1>
+
+    <h3>➕ Add Medicine</h3>
+    <form method="POST" action="/add">
+        <input name="id" placeholder="ID" required><br><br>
+        <input name="medicine" placeholder="Medicine Name" required><br><br>
+        <input name="pharmacy" placeholder="Pharmacy" required><br><br>
+        <input name="location" placeholder="Location" required><br><br>
+        <input name="price" placeholder="Price" required><br><br>
+        <input name="stock" placeholder="Stock" required><br><br>
+        <button type="submit">Add Medicine</button>
+    </form>
+
+    <h3>📦 Medicine List</h3>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="medicineTable">
+        </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- ✅ Back Button Added -->
+    <a href="/admin">⬅ Back to Dashboard</a>
+
+    <script>
+        fetch("/manage-data")
+            .then(res => res.json())
+            .then(data => {
+                const table = document.getElementById("medicineTable");
+                table.innerHTML = "";
+
+                data.forEach(m => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${m.id}</td>
+                            <td>${m.medicine}</td>
+                            <td>${m.location}</td>
+                            <td>${m.price}</td>
+                            <td>${m.stock}</td>
+                            <td>
+                                <form method="POST" action="/delete">
+                                    <input type="hidden" name="id" value="${m.id}">
+                                    <button>Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+    </script>
+
+</body>
+</html>

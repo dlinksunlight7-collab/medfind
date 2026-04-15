@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "medicine": "Paracetamol",
+    "pharmacy": "ABC Pharmacy",
+    "location": "Chennai",
+    "price": 25,
+    "stock": 78,
+    "lastUpdated": "2026-02-18"
+  },
+  {
+    "id": 2,
+    "medicine": "shibla",
+    "pharmacy": "CityCare Medicals",
+    "location": "Chennai",
+    "price": 32,
+    "stock": 0,
+    "lastUpdated": "2026-02-19"
+  },
+  {
+    "id": 3,
+    "medicine": "Insulin",
+    "pharmacy": "HealthPlus Pharmacy",
+    "location": "Bangalore",
+    "price": 1850,
+    "stock": 12,
+    "lastUpdated": "2026-02-20"
+  },
+  {
+    "id": "12345",
+    "medicine": "sdfgh",
+    "pharmacy": "fghjk",
+    "location": "xcvbn",
+    "price": 123,
+    "stock": 67,
+    "lastUpdated": "2026-02-20"
+  },
+  {
+    "id": "12345",
+    "medicine": "xcvbn",
+    "pharmacy": "fghj",
+    "location": "cvbn",
+    "price": 567,
+    "stock": 76,
+    "lastUpdated": "2026-02-20"
+  },
+  {
+    "id": "M001",
+    "medicine": "Paracetamol",
+    "pharmacy": "MedPlus",
+    "location": "Kochi",
+    "price": 20,
+    "stock": 50,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M002",
+    "medicine": "Amoxicillin",
+    "pharmacy": "Apollo Pharmacy",
+    "location": "Kochi",
+    "price": 80,
+    "stock": 30,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M003",
+    "medicine": "Dolo 650",
+    "pharmacy": "KIMS Pharmacy",
+    "location": "Thiruvananthapuram",
+    "price": 35,
+    "stock": 60,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M004",
+    "medicine": "Cetirizine",
+    "pharmacy": "Aster Pharmacy",
+    "location": "Calicut",
+    "price": 15,
+    "stock": 40,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M005",
+    "medicine": "Metformin",
+    "pharmacy": "Malabar Medicals",
+    "location": "Malappuram",
+    "price": 120,
+    "stock": 25,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M006",
+    "medicine": "Azithromycin",
+    "pharmacy": "MedPlus",
+    "location": "Thrissur",
+    "price": 90,
+    "stock": 45,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M007",
+    "medicine": "Pantoprazole",
+    "pharmacy": "Apollo Pharmacy",
+    "location": "Kottayam",
+    "price": 70,
+    "stock": 55,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M008",
+    "medicine": "Ibuprofen",
+    "pharmacy": "Care Pharmacy",
+    "location": "Alappuzha",
+    "price": 25,
+    "stock": 80,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M009",
+    "medicine": "Insulin",
+    "pharmacy": "Lakeshore Pharmacy",
+    "location": "Ernakulam",
+    "price": 450,
+    "stock": 15,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M010",
+    "medicine": "ORS",
+    "pharmacy": "City Medicals",
+    "location": "Kannur",
+    "price": 10,
+    "stock": 100,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M011",
+    "medicine": "Cough Syrup",
+    "pharmacy": "Royal Pharmacy",
+    "location": "Palakkad",
+    "price": 95,
+    "stock": 35,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M012",
+    "medicine": "Vitamin D",
+    "pharmacy": "Green Cross Pharmacy",
+    "location": "Kollam",
+    "price": 150,
+    "stock": 40,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M014",
+    "medicine": "Antacid",
+    "pharmacy": "Unity Medicals",
+    "location": "Wayanad",
+    "price": 20,
+    "stock": 70,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "M015",
+    "medicine": "Antibiotic Cream",
+    "pharmacy": "Elite Pharmacy",
+    "location": "Idukki",
+    "price": 110,
+    "stock": 22,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "31",
+    "medicine": "paracetamol",
+    "pharmacy": "abcd",
+    "location": "munnar",
+    "price": 123,
+    "stock": 123,
+    "lastUpdated": "2026-02-21"
+  },
+  {
+    "id": "3",
+    "medicine": "insulin",
+    "pharmacy": "abcd",
+    "location": "bangalore",
+    "price": 1850,
+    "stock": 12,
+    "lastUpdated": "2026-02-21"
+  }
+]
