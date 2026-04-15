@@ -6,31 +6,59 @@ const session = require("express-session");
 
 const app = express();
 
+// Use PORT from environment variable (Render sets this)
+const PORT = process.env.PORT || 3000;
+
 /* ===============================
    Middleware
 ================================= */
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
+// Use a stronger secret from environment variable
 app.use(session({
-    secret: "medfinder_secret_key",
+    secret: process.env.SESSION_SECRET || "medfinder_secret_key",
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === "production" // Use secure cookies in production
+    }
 }));
+
+// Trust proxy for secure cookies on Render
+if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+}
 
 /* ===============================
    Load Medicines
 ================================= */
 function loadMedicines() {
-    if (!fs.existsSync("medicines.json")) return [];
-    return JSON.parse(fs.readFileSync("medicines.json"));
+    const filePath = path.join(__dirname, "medicines.json");
+    if (!fs.existsSync(filePath)) {
+        // Create initial data file if it doesn't exist
+        const initialData = [];
+        fs.writeFileSync(filePath, JSON.stringify(initialData, null, 2));
+        return initialData;
+    }
+    try {
+        return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    } catch (error) {
+        console.error("Error loading medicines:", error);
+        return [];
+    }
 }
 
 /* ===============================
    Save Medicines
 ================================= */
 function saveMedicines(data) {
-    fs.writeFileSync("medicines.json", JSON.stringify(data, null, 2));
+    const filePath = path.join(__dirname, "medicines.json");
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error("Error saving medicines:", error);
+    }
 }
 
 /* ===============================
@@ -45,7 +73,7 @@ app.get("/", (req, res) => {
 ================================= */
 app.get("/search", (req, res) => {
     const location = req.query.location?.toLowerCase() || "";
-    const medicineName = req.query.medicine?.toLowerCase() || ""; // Get medicine name from query
+    const medicineName = req.query.medicine?.toLowerCase() || "";
     const medicines = loadMedicines();
 
     const results = medicines.filter(m => {
@@ -69,8 +97,12 @@ app.get("/login", (req, res) => {
 ================================= */
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
+    
+    // Use environment variables for credentials in production
+    const adminUser = process.env.ADMIN_USERNAME || "admin";
+    const adminPass = process.env.ADMIN_PASSWORD || "1234";
 
-    if (username === "admin" && password === "1234") {
+    if (username === adminUser && password === adminPass) {
         req.session.admin = true;
         res.redirect("/admin");
     } else {
@@ -90,12 +122,12 @@ app.get("/admin", (req, res) => {
    Dashboard Data API
 ================================= */
 app.get("/dashboard-data", (req, res) => {
-    if (!req.session.admin) return res.redirect("/login");
+    if (!req.session.admin) return res.status(401).json({ error: "Unauthorized" });
 
     const medicines = loadMedicines();
 
     const totalMedicines = medicines.length;
-    const totalStock = medicines.reduce((sum, m) => sum + m.stock, 0);
+    const totalStock = medicines.reduce((sum, m) => sum + (m.stock || 0), 0);
     const lowStock = medicines.filter(m => m.stock < 5);
 
     res.json({
@@ -106,7 +138,7 @@ app.get("/dashboard-data", (req, res) => {
 });
 
 /* ===============================
-   Manage Medicines Page (FIXED)
+   Manage Medicines Page
 ================================= */
 app.get("/admin/manage", (req, res) => {
     if (!req.session.admin) return res.redirect("/login");
@@ -117,7 +149,7 @@ app.get("/admin/manage", (req, res) => {
    API for Manage Page Data
 ================================= */
 app.get("/manage-data", (req, res) => {
-    if (!req.session.admin) return res.redirect("/login");
+    if (!req.session.admin) return res.status(401).json({ error: "Unauthorized" });
     res.json(loadMedicines());
 });
 
@@ -131,12 +163,12 @@ app.post("/add", (req, res) => {
     let medicines = loadMedicines();
 
     medicines.push({
-        id,
+        id: id || Date.now().toString(), // Generate ID if not provided
         medicine,
         pharmacy,
         location,
-        price: parseInt(price),
-        stock: parseInt(stock),
+        price: parseInt(price) || 0,
+        stock: parseInt(stock) || 0,
         lastUpdated: new Date().toISOString().split("T")[0]
     });
 
@@ -168,8 +200,15 @@ app.get("/logout", (req, res) => {
 });
 
 /* ===============================
+   Health Check Endpoint (for Render)
+================================= */
+app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+});
+
+/* ===============================
    Start Server
 ================================= */
-app.listen(3000, () => {
-    console.log("🚀 Server running at http://localhost:3000");
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });
