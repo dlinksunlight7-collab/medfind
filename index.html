@@ -25,7 +25,6 @@
       --red: #c0392b;
       --muted: #888070;
       --card-bg: #ffffff;
-      --border-light: rgba(201, 168, 76, 0.25);
     }
 
     body {
@@ -36,7 +35,6 @@
       overflow-x: hidden;
     }
 
-    /* subtle grain texture */
     body::before {
       content: '';
       position: fixed;
@@ -47,14 +45,12 @@
       opacity: 0.5;
     }
 
-    /* header styling */
     .site-header {
       position: sticky;
       top: 0;
       z-index: 100;
       background: var(--ink);
       border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-      backdrop-filter: blur(0px);
     }
 
     .header-inner {
@@ -100,7 +96,6 @@
       color: var(--gold);
     }
 
-    /* right side group (admin + subscription button) */
     .header-actions {
       display: flex;
       align-items: center;
@@ -127,7 +122,6 @@
       color: var(--gold-light);
     }
 
-    /* SUBSCRIPTION BUTTON — premium mailto trigger */
     .subscribe-btn {
       background: linear-gradient(105deg, #2c2c2c 0%, #1f1f1f 100%);
       border: 1px solid rgba(201, 168, 76, 0.65);
@@ -168,11 +162,6 @@
       transform: translateX(2px);
     }
 
-    .subscribe-btn:active {
-      transform: translateY(1px);
-    }
-
-    /* Hero section */
     .hero {
       background: var(--ink);
       padding: 90px 32px 80px;
@@ -241,7 +230,6 @@
       margin-bottom: 44px;
     }
 
-    /* Search panel */
     .search-box {
       display: flex;
       flex-wrap: wrap;
@@ -287,7 +275,6 @@
     #medicine::placeholder,
     #location::placeholder {
       color: rgba(255, 255, 255, 0.4);
-      font-weight: 400;
     }
 
     #searchBtn {
@@ -316,10 +303,8 @@
     #searchBtn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
 
-    /* content */
     .content {
       max-width: 1280px;
       margin: 0 auto;
@@ -347,7 +332,9 @@
       animation: spin 0.7s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
     #results {
       list-style: none;
@@ -527,7 +514,6 @@
       font-weight: 500;
     }
 
-    /* mobile adjustments */
     @media (max-width: 680px) {
       .header-inner { padding: 0 20px; height: auto; flex-wrap: wrap; gap: 12px; padding: 12px 20px; }
       .logo-text { font-size: 20px; }
@@ -551,7 +537,7 @@
       <span class="logo-text">Med<span>Find</span></span>
     </a>
     <div class="header-actions">
-      <!-- SUBSCRIPTION BUTTON - top right corner: mailto trigger -->
+      <!-- SUBSCRIPTION BUTTON - opens in NEW TAB -->
       <button class="subscribe-btn" id="subscribeMailBtn">
         <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -604,24 +590,46 @@
 </footer>
 
 <script>
-  // ========== MAILTO SUBSCRIPTION BUTTON (top-right) ==========
+  // ========== FIXED: Opens Gmail in NEW TAB ==========
   const subscribeButton = document.getElementById('subscribeMailBtn');
   if (subscribeButton) {
     subscribeButton.addEventListener('click', (e) => {
       e.preventDefault();
-      // mailto link to medfind@gmail.com with a pre-filled subject & body
+      
+      const recipient = 'medfind@gmail.com';
       const subject = encodeURIComponent('Subscribe to MedFind Updates');
-      const body = encodeURIComponent('Hello MedFind team,\n\nI would like to subscribe for medicine availability alerts and pharmacy updates.\n\nBest regards,\n[Your Name]');
-      window.location.href = `mailto:medfind@gmail.com?subject=${subject}&body=${body}`;
+      const body = encodeURIComponent(
+        "Hello MedFind Team,\n\n" +
+        "I would like to subscribe to receive updates about:\n" +
+        "• Medicine availability alerts\n" +
+        "• Price drop notifications\n" +
+        "• New pharmacy partnerships\n\n" +
+        "Please add me to your subscription list.\n\n" +
+        "Best regards,\n" +
+        "[Your Name]\n" +
+        "[Your Location]"
+      );
+      
+      // Create Gmail compose URL (opens in new tab)
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${subject}&body=${body}`;
+      
+      // Open Gmail in a new tab
+      window.open(gmailUrl, '_blank');
+      
+      // Optional: show a small notification
+      const statusDiv = document.getElementById('status');
+      const originalText = statusDiv.innerHTML;
+      statusDiv.innerHTML = '📧 Opening Gmail in a new tab...';
+      setTimeout(() => {
+        if (statusDiv.innerHTML === '📧 Opening Gmail in a new tab...') {
+          statusDiv.innerHTML = originalText;
+        }
+      }, 3000);
     });
   }
 
   // ========== SEARCH & MOCK PHARMACY DATA ==========
-  // Simulated API / backend – dynamic results based on medicine & location
-  // Generates realistic pharmacy data that varies depending on search terms.
-
   function generateMockResults(medicineQuery, locationQuery) {
-    // base pharmacy list with real feel
     const pharmacies = [
       { name: "Wellness Hub Pharmacy", basePrice: 48, locationPrefix: "Downtown" },
       { name: "MediPlus Central", basePrice: 55, locationPrefix: "Central" },
@@ -630,21 +638,10 @@
       { name: "Swasthya Medical", basePrice: 39, locationPrefix: "North" },
       { name: "CityMed Pharmacy", basePrice: 52, locationPrefix: "South" }
     ];
-
-    const medicineNames = [
-      medicineQuery ? medicineQuery.toUpperCase() : "Paracetamol",
-      "Azithromycin",
-      "Cetrizine",
-      "Insulin Aspart",
-      "Amoxicillin",
-      "Metformin"
-    ];
     
     let targetMedicine = medicineQuery && medicineQuery.trim() !== "" ? medicineQuery.trim() : "Paracetamol";
-    // capitalize first letter for display
     const displayMedicine = targetMedicine.charAt(0).toUpperCase() + targetMedicine.slice(1).toLowerCase();
 
-    // Use location to influence results count & prices (simulate local variance)
     let locationVariant = 1;
     if (locationQuery && locationQuery.trim() !== "") {
       const locLower = locationQuery.toLowerCase();
@@ -653,13 +650,12 @@
       else locationVariant = 1.0;
     }
     
-    // generate 3 to 6 results
-    const resultsCount = Math.floor(Math.random() * 4) + 3; // 3-6 results
+    const resultsCount = Math.floor(Math.random() * 4) + 3;
     const results = [];
     
     for (let i = 0; i < resultsCount; i++) {
       const pharmacyObj = pharmacies[i % pharmacies.length];
-      let priceModifier = 0.9 + (Math.random() * 0.5); // 0.9 - 1.4
+      let priceModifier = 0.9 + (Math.random() * 0.5);
       let finalPrice = Math.round((pharmacyObj.basePrice * priceModifier * locationVariant) * 100) / 100;
       finalPrice = Math.max(19.99, Math.min(299, finalPrice));
       const stockAmount = Math.random() > 0.25 ? Math.floor(Math.random() * 45) + 5 : 0;
@@ -676,7 +672,6 @@
       });
     }
     
-    // sort by price low to high
     results.sort((a,b) => a.price - b.price);
     return results;
   }
@@ -746,7 +741,6 @@
     statusDiv.textContent = 'Scanning pharmacy network ...';
     document.getElementById('results').innerHTML = '';
     
-    // simulate async network delay (realistic API mock)
     setTimeout(() => {
       try {
         const mockResults = generateMockResults(medicineVal, locationVal);
@@ -765,7 +759,6 @@
     }, 380);
   }
   
-  // event listeners
   const searchBtn = document.getElementById('searchBtn');
   searchBtn.addEventListener('click', searchHandler);
   const locationField = document.getElementById('location');
@@ -773,9 +766,7 @@
   locationField.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchHandler(); });
   medicineField.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchHandler(); });
   
-  // optional preload demo hint: show something on first load?
   window.addEventListener('DOMContentLoaded', () => {
-    // small demo placeholder: prefill some default suggestions but not mandatory
     const statusDefault = document.getElementById('status');
     statusDefault.textContent = '💡 Try "Paracetamol" or "Azithromycin" + city name to begin.';
   });
